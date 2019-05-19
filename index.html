@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>大数乘法</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+</head>
+
+<body class="layui-layout-body">
+    <ul class="layui-nav layui-bg-green">
+        <li class="layui-nav-item"><a style="font-size: 20px;color: #fff;">大数乘法计算器</a></li>
+    </ul>
+    <div class="layui-container">
+    
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend></legend>
+    </fieldset>
+    <form class="layui-form" action="">
+        
+        <div class="layui-form-item layui-form-text">
+                <textarea id = "num1" name="num1" placeholder="请输入数据1" class="layui-textarea"  style="resize:none" ></textarea>
+
+        </div>
+        <div class="layui-form-item layui-form-text">
+                <textarea id = "num2" name="num2" placeholder="请输入数据2" class="layui-textarea"  style="resize:none" ></textarea>
+        </div>
+        <div class="layui-form-item layui-form-text">
+                <textarea id = "res" name="num3" placeholder="计算结果" class="layui-textarea" disabled="disabled"  style="resize:none" ></textarea>
+        </div>
+        <div class="layui-form-item">
+                <button class="layui-btn" lay-submit lay-filter="formDo">立即提交</button>
+                <button class="layui-btn layui-btn-primary" lay-filter="formClear">重置</button>
+        </div>
+    </form>
+    <!-- 你的HTML代码 -->
+
+    <script src="./layui/layui.js"></script>
+    <script>
+        //一般直接写在一个js文件中
+        layui.use(['layer', 'form'], function () {
+            var layer = layui.layer
+                , form = layui.form
+                ,$ = layui.$;
+            var multiply = function (num1, num2) {
+                var len1 = num1.length,
+                    len2 = num2.length
+                var ans = []
+                for (var i = len1 - 1; i >= 0; i--) {
+                    for (var j = len2 - 1; j >= 0; j--) {
+                        var index1 = i + j
+                        var index2 = i + j + 1
+                        var mul = num1[i] * num2[j] + (ans[index2] || 0)
+                        ans[index1] = Math.floor(mul / 10) + (ans[index1] || 0)
+                        ans[index2] = mul % 10
+                    }
+                }
+                var result = ans.join('')
+
+                return +result == 0 ? '0' : result.replace(/^0+/, '')
+
+            }
+            form.on('submit(formDo)', function (data) {
+                
+                $("#res").text(multiply(data.field.num1, data.field.num2))
+                return false;
+            });
+            form.on('submit(formClear)', function (data) {
+                $("#num1").text("请输入数据1")
+                $("#num2").text("请输入数据1")
+                $("#res").text("计算结果")
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>
